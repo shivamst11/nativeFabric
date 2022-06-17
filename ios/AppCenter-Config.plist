@@ -8,5 +8,8 @@
    Copyright (c) 2022 ___ORGANIZATIONNAME___. All rights reserved.
 -->
 <plist version="1.0">
-<dict/>
+  <dict>
+     <key>AppSecret</key>
+     <string>0537e6df-3176-40cb-89a5-ba42b6fc0583</string>
+     </dict>
 </plist>
