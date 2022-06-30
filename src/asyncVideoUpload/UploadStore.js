@@ -114,7 +114,7 @@ class UploadStore {
       this.fileUploadingInBackground = true;
       setTimeout(() => {
         this.fileUploadingInBackground = false;
-      }, 2000);
+      }, 4000);
     }
     this.reducerInitialState = {...this.reducerInitialState, queue: list};
   };
