@@ -11,6 +11,7 @@ class UploadStore {
   }
 
   videoList = [];
+  fileUploadingInBackground = false;
 
   reducerInitialState = {
     queue: [],
@@ -109,6 +110,12 @@ class UploadStore {
 
   getUploadList = async () => {
     const list = await getList();
+    if (list?.length > 0) {
+      this.fileUploadingInBackground = true;
+      setTimeout(() => {
+        this.fileUploadingInBackground = false;
+      }, 2000);
+    }
     this.reducerInitialState = {...this.reducerInitialState, queue: list};
   };
 

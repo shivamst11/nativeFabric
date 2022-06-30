@@ -126,6 +126,25 @@ function Main() {
       <View style={{flexGrow: 1}}>
         {toJS(UploadStore.videoList).map(item => imageCard(item))}
       </View>
+
+      {UploadStore.fileUploadingInBackground ? (
+        <Modal visible onDismiss={() => setPlayFile(null)} transparent>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  margin: 20,
+                }}>
+                <Text>
+                  Some Previous file is uploading in background once it is done.
+                  you wil be notified
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      ) : null}
       {playFile ? (
         <Modal visible onDismiss={() => setPlayFile(null)} transparent>
           <View style={styles.centeredView}>
@@ -169,6 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     padding: 10,
+    borderRadius: 10,
   },
   itemContainer: {
     marginVertical: 10,
