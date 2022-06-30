@@ -10,11 +10,18 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.17.7",
     "appcenter": "4.4.4",
     "appcenter-analytics": "4.4.4",
     "appcenter-crashes": "4.4.4",
+    "mobx": "^6.6.1",
+    "mobx-react-lite": "^3.4.0",
     "react": "17.0.2",
-    "react-native": "0.68.0"
+    "react-native": "0.68.0",
+    "react-native-compressor": "^1.5.2",
+    "react-native-image-picker": "^4.8.4",
+    "react-native-video": "^5.2.0",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",

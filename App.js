@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Crashes from 'appcenter-crashes';
 import Analytics from 'appcenter-analytics';
+import Main from './src/asyncVideoUpload/Main';
 const App = () => {
   useEffect(() => {
     checkPreviouseSession();
@@ -30,10 +31,8 @@ const App = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView>
-        <ScrollView>
-          <Text>App</Text>
+    <SafeAreaView style={styles.container}>
+      {/* <Text>App</Text>
           <Button
             title="Crash"
             onPress={() => {
@@ -49,16 +48,15 @@ const App = () => {
           <View style={{height: 1, width: '100%', backgroundColor: 'red'}} />
           <View style={{alignSelf: 'center'}}>
             <Text> crating Feature branch 1 </Text>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+          </View> */}
+      {<Main />}
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
+    backgroundColor: 'white',
   },
 });
 export default App;
