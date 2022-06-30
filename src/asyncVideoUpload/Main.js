@@ -38,19 +38,7 @@ function Main() {
     UploadStore.uploadNext(true);
   };
 
-  const getdata = async () => {
-    try {
-      await reset();
-      UploadStore.reducerInitialState = {
-        queue: [],
-        current: null,
-      };
-    } catch (e) {
-      console.log('error', e);
-    }
-  };
-
-  const postData = async () => {
+  const getLocalStorageData = async () => {
     try {
       console.log('list', await getList());
     } catch (e) {
@@ -83,13 +71,6 @@ function Main() {
       </TouchableOpacity>
     );
   };
-  const insert = async () => {
-    try {
-      post({name: 'shvam'});
-    } catch (e) {
-      console.log('error', e);
-    }
-  };
 
   const pickVideo = () => {
     const options = {
@@ -117,25 +98,31 @@ function Main() {
     <ScrollView style={{flexGrow: 1}}>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <View style={{backgroundColor: 'blue', height: 40, width: 40}}>
-          <Button onPress={pickVideo} title="Upload" />
-        </View>
+        <TouchableOpacity
+          onPress={pickVideo}
+          style={{
+            backgroundColor: 'yellow',
+            height: 40,
+            margin: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text>{'select File to upload'}</Text>
+        </TouchableOpacity>
       </SafeAreaView>
+
       <TouchableOpacity
-        style={{backgroundColor: 'red', height: 30, width: 30, margin: 40}}
-        onPress={() => insert()}>
-        <Text>{'insert data in local storage'}</Text>
+        style={{
+          backgroundColor: 'pink',
+          height: 40,
+          margin: 10,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onPress={() => getLocalStorageData()}>
+        <Text>{'get Upload queue'}</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={{backgroundColor: 'red', height: 30, width: 30, margin: 40}}
-        onPress={() => postData()}>
-        <Text>{'get local storage'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{backgroundColor: 'pink', height: 30, width: 30}}
-        onPress={() => getdata()}>
-        <Text>reset local storage</Text>
-      </TouchableOpacity>
+
       <View style={{flexGrow: 1}}>
         {toJS(UploadStore.videoList).map(item => imageCard(item))}
       </View>
