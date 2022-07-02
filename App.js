@@ -50,6 +50,7 @@ const App = () => {
           <View style={{alignSelf: 'center'}}>
             <Text> crating Feature branch 1 </Text>
             <Text> add review checks in master</Text>
+            <Text> crating Feature branch 01 </Text>
           </View>
         </ScrollView>
       </SafeAreaView>
