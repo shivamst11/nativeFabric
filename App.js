@@ -48,7 +48,7 @@ const App = () => {
           />
           <View style={{height: 1, width: '100%', backgroundColor: 'red'}} />
           <View style={{alignSelf: 'center'}}>
-            <Text> crating Feature branch 1 </Text>
+            <Text> crating Feature branch 01 </Text>
           </View>
         </ScrollView>
       </SafeAreaView>
