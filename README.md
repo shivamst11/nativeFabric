@@ -1,4 +1,5 @@
 # nativeFabric
 
-[![Build status](https://build.appcenter.ms/v0.1/apps/ae554fab-fb1e-43e0-b9d6-7b3f34109bdc/branches/dev/badge)](https://appcenter.ms)
-[![Build status](https://build.appcenter.ms/v0.1/apps/820cf747-636e-41ce-988f-3a0336c50bc1/branches/dev/badge)](https://appcenter.ms)
+[![Build status](https://build.appcenter.ms/v0.1/apps/60dd9718-5dc2-421e-a5bd-e3ccd780fd7e/branches/dev/badge)](https://appcenter.ms)
+[![Build status](https://build.appcenter.ms/v0.1/apps/630c9848-a68d-46d5-971c-6584cff52a75/branches/dev/badge)](https://appcenter.ms)
+
