@@ -49,6 +49,7 @@ const App = () => {
           <View style={{height: 1, width: '100%', backgroundColor: 'red'}} />
           <View style={{alignSelf: 'center'}}>
             <Text> crating Feature branch 1 </Text>
+            <Text> add review checks in master</Text>
           </View>
         </ScrollView>
       </SafeAreaView>
