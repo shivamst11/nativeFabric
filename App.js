@@ -11,6 +11,7 @@ import {
 import Crashes from 'appcenter-crashes';
 import Analytics from 'appcenter-analytics';
 import Main from './src/asyncVideoUpload/Main';
+import MyPager from './src/PagerView/MyPager';
 const App = () => {
   useEffect(() => {
     checkPreviouseSession();
@@ -49,7 +50,8 @@ const App = () => {
           <View style={{alignSelf: 'center'}}>
             <Text> crating Feature branch 1 </Text>
           </View> */}
-      {<Main />}
+      {/* {<Main />} */}
+      {<MyPager />}
     </SafeAreaView>
   );
 };
