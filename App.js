@@ -8,59 +8,87 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import Crashes from 'appcenter-crashes';
-import Analytics from 'appcenter-analytics';
+import 'react-native-get-random-values';
+import Realm from 'realm';
+import {createRealmContext} from '@realm/react';
+
+const appId = 'realm-0-gaioa';
+const appConfig = {id: appId};
+
+const TodoSchema = {
+  name: 'Todo',
+  primaryKey: '_id',
+  properties: {
+    _id: 'objectId',
+    text: 'string',
+  },
+};
+
 const App = () => {
-  useEffect(() => {
-    checkPreviouseSession();
-  }, []);
+  const [user, setUser] = useState(null);
+  const [userName, setUserName] = useState('newName');
+  const {RealmProvider, useRealm, useQuery} = createRealmContext({
+    schema: [TodoSchema],
+  });
 
-  const checkPreviouseSession = async () => {
-    const didCrash = await Crashes.hasCrashedInLastSession();
-    console.log('didCrash', didCrash);
-
-    if (didCrash) {
-      const report = await Crashes.lastSessionCrashReport();
-      alert('sory about crash, we are working on it ');
-    }
-  };
-
-  const trackEvent = () => {
-    Analytics.trackEvent('My custom event');
+  const login = async () => {
+    const app = new Realm.App(appConfig);
+    const credentials = Realm.Credentials.anonymous();
+    const res = await app.logIn(credentials);
+    setUser(res);
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView>
-        <ScrollView>
-          <Text>App</Text>
-          <Button
-            title="Crash"
-            onPress={() => {
-              Crashes.generateTestCrash();
-            }}
-          />
-          <Button
-            title="events"
-            onPress={() => {
-              trackEvent();
-            }}
-          />
-          <View style={{height: 1, width: '100%', backgroundColor: 'red'}} />
-          <View style={{alignSelf: 'center'}}>
-            <Text> crating Feature branch 1 </Text>
-            <Text> add review checks in master</Text>
-            <Text> crating Feature branch 01 </Text>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+    <View style={{flex: 1}}>
+      {user ? (
+        <RealmProvider
+          schema={[TodoSchema]}
+          sync={{user, partitionValue: userName}}>
+          <SafeAreaView>
+            <CreateTodo useRealm={useRealm} useQuery={useQuery} />
+            <Button
+              title="Logout"
+              onPress={() => {
+                setUser(null);
+                setUserName('');
+              }}
+            />
+          </SafeAreaView>
+        </RealmProvider>
+      ) : (
+        <View style={{flex: 1}}>
+          <SafeAreaView />
+          <Button title="Login" onPress={login} />
+        </View>
+      )}
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
   },
 });
 export default App;
+
+const CreateTodo = ({useRealm, useQuery}) => {
+  const realm = useRealm();
+  const data = useQuery('Todo');
+
+  console.log('todos', data);
+
+  const createNewTodo = () => {
+    realm.write(() => {
+      realm.create('Todo', {
+        _id: new Realm.BSON.ObjectID(),
+        text: 'nwe task13 ',
+      });
+    });
+  };
+
+  return (
+    <View>
+      <Button title="Create Todo" onPress={createNewTodo} />
+    </View>
+  );
+};
