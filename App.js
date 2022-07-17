@@ -11,105 +11,86 @@ import {
 import 'react-native-get-random-values';
 import Realm from 'realm';
 import {createRealmContext} from '@realm/react';
+import {ObjectId} from 'bson';
 
-const TaskSchema = {
+const schema = {
   name: 'Task',
   properties: {
-    _id: 'int',
+    _id: 'objectId',
+    _partition: 'string',
     name: 'string',
-    status: 'string?',
+    status: 'string',
   },
   primaryKey: '_id',
 };
 
 const App = () => {
+  const [user, setUser] = useState(null);
   const realm = useRef();
-  const task1 = useRef();
-  const allDataRef = useRef();
+
+  async function anonymousLogin() {
+    try {
+      const app = new Realm.App({id: 'application-1-bigkk'}); // pass in the appConfig variable that you created earlier
+      const credentials = Realm.Credentials.anonymous(); // create an anonymous credential
+      const res = await app.logIn(credentials);
+      setUser(res);
+    } catch (error) {
+      throw `Error logging in anonymously: ${JSON.stringify(error, null, 2)}`;
+    }
+  }
 
   useEffect(() => {
     (async () => {
-      realm.current = await Realm.open({
-        path: 'myrealm',
-        schema: [TaskSchema],
-      });
-
-      allDataRef.current = realm.current.objects('Task');
-      allDataRef.current.addListener(listener);
+      await anonymousLogin();
     })();
   }, []);
 
-  const listener = (tasks, changes) => {
-    changes.deletions.forEach(index => {
-      // Deleted objects cannot be accessed directly,
-      // but we can update a UI list, etc. knowing the index.
-      console.log(`A task was deleted at the ${index} index`);
-    });
+  useEffect(() => {
+    console.log('user:', user);
 
-    changes.insertions.forEach(index => {
-      let insertedTasks = tasks[index];
-      console.log(`insertedTasks: ${JSON.stringify(insertedTasks, null, 2)}`);
+    if (user) openRealm();
+  }, [user]);
+
+  async function openRealm() {
+    try {
       // ...
-    });
+      const config = {
+        schema: [schema],
+        sync: {
+          user: user,
+          partitionValue: 'shivam',
+        },
+      };
 
-    changes.newModifications.forEach(index => {
-      let modifiedTask = tasks[index];
-      console.log(`modifiedTask: ${JSON.stringify(modifiedTask, null, 2)}`);
-      // ...
-    });
-  };
+      realm.current = await Realm.open(config);
+      console.log('sdfdsf');
+    } catch (error) {
+      throw `Error opening realm: ${JSON.stringify(error, null, 2)}`;
+    }
+  }
 
-  const createDb = async () => {
+  const createDb = () => {
     realm.current.write(() => {
-      task1.current = realm.current.create('Task', {
-        _id: 7,
-        name: 'go grocery shopping',
-        status: 'Open',
+      realm.current.create('Task', {
+        _id: new Realm.BSON.ObjectID(),
+        name: 'shivam tripathi',
+        status: 'Close',
+        _partition: 'shivam',
       });
     });
   };
 
-  const readDb = () => {
-    const allData = realm.current.objects('Task');
-    console.log('allData', allData);
-  };
-
-  const filteredData = () => {
-    const allData = realm.current.objects('Task');
-    console.log('allData', allData.filtered('status = "Closed"'));
-  };
-
-  const sortedData = () => {
-    const allData = realm.current.objects('Task');
-    console.log('allData', allData.sorted('name'));
-  };
-
-  const modifyDb = () => {
-    const allData = realm.current.objects('Task');
-    realm.current.write(() => {
-      allData[0].status = 'Closed';
-    });
-
-    // or
-    //  task1.current.status = 'Closed';
-  };
-
-  const deleteDb = () => {
-    const allData = realm.current.objects('Task');
-    realm.current.write(() => {
-      realm.current.delete(allData[3]);
-    });
+  const realdDb = () => {
+    const tasks = realm.current.objects('Task');
+    console.log('tasks', tasks);
   };
 
   return (
     <View style={styles.container}>
       <SafeAreaView />
+      <Button title="Login" onPress={anonymousLogin} />
       <Button title="createDb" onPress={createDb} />
-      <Button title="readDb" onPress={readDb} />
-      <Button title="filteredData" onPress={filteredData} />
-      <Button title="sortedData" onPress={sortedData} />
-      <Button title="modifyDb" onPress={modifyDb} />
-      <Button title="deleteDb" onPress={deleteDb} />
+      <Button title="realdDb" onPress={realdDb} />
     </View>
   );
 };
@@ -119,25 +100,3 @@ const styles = StyleSheet.create({
   },
 });
 export default App;
-
-const CreateTodo = ({useRealm, useQuery}) => {
-  const realm = useRealm();
-  const data = useQuery('Todo');
-
-  console.log('todos', data);
-
-  const createNewTodo = () => {
-    realm.write(() => {
-      realm.create('Todo', {
-        _id: new Realm.BSON.ObjectID(),
-        text: 'nwe task13 ',
-      });
-    });
-  };
-
-  return (
-    <View>
-      <Button title="Create Todo" onPress={createNewTodo} />
-    </View>
-  );
-};
