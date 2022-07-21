@@ -11,9 +11,8 @@ import {
 import 'react-native-get-random-values';
 import Realm from 'realm';
 import {createRealmContext} from '@realm/react';
-import {ObjectId} from 'bson';
 
-const schema = {
+const Schema = {
   name: 'Task',
   properties: {
     _id: 'objectId',
@@ -26,7 +25,10 @@ const schema = {
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const realm = useRef();
+
+  const {RealmProvider, useRealm, useQuery} = createRealmContext({
+    schema: [Schema],
+  });
 
   async function anonymousLogin() {
     try {
@@ -40,57 +42,21 @@ const App = () => {
   }
 
   useEffect(() => {
-    (async () => {
-      await anonymousLogin();
-    })();
+    anonymousLogin();
   }, []);
-
-  useEffect(() => {
-    console.log('user:', user);
-
-    if (user) openRealm();
-  }, [user]);
-
-  async function openRealm() {
-    try {
-      // ...
-      const config = {
-        schema: [schema],
-        sync: {
-          user: user,
-          partitionValue: 'shivam',
-        },
-      };
-
-      realm.current = await Realm.open(config);
-      console.log('sdfdsf');
-    } catch (error) {
-      throw `Error opening realm: ${JSON.stringify(error, null, 2)}`;
-    }
-  }
-
-  const createDb = () => {
-    realm.current.write(() => {
-      realm.current.create('Task', {
-        _id: new Realm.BSON.ObjectID(),
-        name: 'shivam tripathi',
-        status: 'Close',
-        _partition: 'shivam',
-      });
-    });
-  };
-
-  const realdDb = () => {
-    const tasks = realm.current.objects('Task');
-    console.log('tasks', tasks);
-  };
 
   return (
     <View style={styles.container}>
       <SafeAreaView />
-      <Button title="Login" onPress={anonymousLogin} />
-      <Button title="createDb" onPress={createDb} />
-      <Button title="realdDb" onPress={realdDb} />
+      {user ? (
+        <RealmProvider schema={[Schema]} sync={{user, partitionValue: 'karn2'}}>
+          <View style={{flex: 1}}>
+            <CreateTodo useRealm={useRealm} useQuery={useQuery} />
+          </View>
+        </RealmProvider>
+      ) : (
+        <View style={{backgroundColor: 'pink', flex: 1}} />
+      )}
     </View>
   );
 };
@@ -100,3 +66,32 @@ const styles = StyleSheet.create({
   },
 });
 export default App;
+
+const CreateTodo = ({useRealm, useQuery}) => {
+  const realm = useRealm();
+  const data = useQuery('Task');
+
+  const createDb = () => {
+    realm.write(() => {
+      realm.create('Task', {
+        _id: new Realm.BSON.ObjectID(),
+        name: 'karn2',
+        status: 'new',
+        _partition: 'karn2',
+      });
+    });
+  };
+  console.log('todos', data);
+
+  const readDb = () => {
+    const allData = realm.objects('Task');
+    console.log('allData', allData);
+  };
+
+  return (
+    <View>
+      <Button title="createDb" onPress={createDb} />
+      <Button title="readDb" onPress={readDb} />
+    </View>
+  );
+};
